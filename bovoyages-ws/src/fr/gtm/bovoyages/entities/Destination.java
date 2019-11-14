@@ -41,7 +41,7 @@ public class Destination implements Serializable {
 	private int deleted;
 	// private String nomImages;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "fk_destination")
 	private Set<DatesVoyage> datesVoyage = new HashSet<>();
 

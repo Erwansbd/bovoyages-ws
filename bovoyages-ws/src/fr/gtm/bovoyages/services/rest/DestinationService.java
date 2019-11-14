@@ -78,7 +78,7 @@ public class DestinationService {
 	}
 	
 	@GET
-	@Path("/{id}/valid&reduced")
+	@Path("/{id}/dates/valid")
 	@Produces({"application/json;charset=utf-8"})
 	public Set<DatesVoyage> getValidReducedDatesVoyages(@PathParam("id")long id) {
 		return destinationdao.getValidDatesVoyagesByDestinationId(id);
