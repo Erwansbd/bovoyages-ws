@@ -1,5 +1,5 @@
 package fr.gtm.bovoyages.dao;
-
+//
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
