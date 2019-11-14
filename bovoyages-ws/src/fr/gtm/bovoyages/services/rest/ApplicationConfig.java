@@ -1,4 +1,4 @@
-package fr.gtm.bovoyages.services;
+package fr.gtm.bovoyages.services.rest;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

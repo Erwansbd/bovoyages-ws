@@ -28,65 +28,56 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "destinations")
 @NamedQueries({
-	//@NamedQuery(name = "Destination.getByNom",query = "SELECT d FROM Destination d WHERE d.region LIKE :region"),
-	@NamedQuery(name = "Destination.getDestinationByDatesVoyage",query = "SELECT d.datesVoyage FROM Destination d WHERE d.datesVoyage IS NOT EMPTY"),
-	@NamedQuery(name = "Destination.getAllDestinations",query = "SELECT d FROM Destination d")	
-})
+		@NamedQuery(name = "Destination.getDestinationByDatesVoyage", query = "SELECT d.datesVoyage FROM Destination d WHERE d.datesVoyage IS NOT EMPTY"),
+		@NamedQuery(name = "Destination.getAllDestinations", query = "SELECT d FROM Destination d"),
+		@NamedQuery(name = "Destination.getAllValidDestinations", query = "SELECT d FROM Destination d WHERE d.deleted=0")})
 public class Destination implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="pk_destination")
+	@Column(name = "pk_destination")
 	private long id;
 	private String region;
 	private String description;
-	//private String nomImages;
-	
-	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
+	private int deleted;
+	// private String nomImages;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "fk_destination")
 	private Set<DatesVoyage> datesVoyage = new HashSet<>();
 
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name="images",joinColumns=@JoinColumn(name="fk_destination"))
-	@Column(name="image")
+	@CollectionTable(name = "images", joinColumns = @JoinColumn(name = "fk_destination"))
+	@Column(name = "image")
 	private List<String> images;
-	
-	
+
 	public Destination() {
-		
+
 	}
-	
+
 	public Destination(String region, String description) {
 		this.region = region;
 		this.description = description;
 	}
-	
-	
+
 	public long getId() {
 		return id;
 	}
-
 
 	public void setId(long id) {
 		this.id = id;
 	}
 
-
 	public String getRegion() {
 		return region;
 	}
-
 
 	public void setRegion(String region) {
 		this.region = region;
 	}
 
-
 	public String getDescription() {
 		return description;
 	}
-
-
 
 	public void setDescription(String description) {
 		this.description = description;
@@ -103,16 +94,22 @@ public class Destination implements Serializable {
 	public Set<DatesVoyage> getDatesVoyage() {
 		return datesVoyage;
 	}
-	
+
 	public void setDatesVoyage(Set<DatesVoyage> datesVoyage) {
 		this.datesVoyage = datesVoyage;
 	}
-	
-	
+
+	public int getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(int deleted) {
+		this.deleted = deleted;
+	}
+
 	@Override
 	public String toString() {
-		return "Destination [id=" + id + ", region=" + region + ", description=" + description + ", nomImages="
-				+ "]";
+		return "Destination [id=" + id + ", region=" + region + ", description=" + description + ", nomImages=" + "]";
 	}
 
 	@Override
@@ -120,6 +117,7 @@ public class Destination implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((datesVoyage == null) ? 0 : datesVoyage.hashCode());
+		result = prime * result + deleted;
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((images == null) ? 0 : images.hashCode());
@@ -141,6 +139,8 @@ public class Destination implements Serializable {
 				return false;
 		} else if (!datesVoyage.equals(other.datesVoyage))
 			return false;
+		if (deleted != other.deleted)
+			return false;
 		if (description == null) {
 			if (other.description != null)
 				return false;
@@ -160,7 +160,6 @@ public class Destination implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
+
 
 }

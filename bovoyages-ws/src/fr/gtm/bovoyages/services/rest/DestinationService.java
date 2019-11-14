@@ -1,6 +1,7 @@
-package fr.gtm.bovoyages.services;
+package fr.gtm.bovoyages.services.rest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -21,6 +22,7 @@ import fr.gtm.bovoyages.dao.DestinationDAO;
 import fr.gtm.bovoyages.dto.DestinationDTO;
 import fr.gtm.bovoyages.entities.DatesVoyage;
 import fr.gtm.bovoyages.entities.Destination;
+import fr.gtm.bovoyages.entities.Voyage;
 
 @Path("/destinations")
 public class DestinationService {
@@ -64,6 +66,41 @@ public class DestinationService {
 	}
 	
 	@GET
+	@Path("/all/valid")
+	@Produces({"application/json;charset=utf-8"}) 
+	public List<DestinationDTO> getValidDestinations() {
+		List<DestinationDTO> destinationsdto = new ArrayList<DestinationDTO>();
+		List<Destination> destinations = destinationdao.getValidDestinations();
+		for(Destination d : destinations) {
+			destinationsdto.add(new DestinationDTO(d));
+		}
+		return destinationsdto;
+	}
+	
+	@GET
+	@Path("/{id}/valid&reduced")
+	@Produces({"application/json;charset=utf-8"})
+	public Set<DatesVoyage> getValidReducedDatesVoyages(@PathParam("id")long id) {
+		return destinationdao.getValidDatesVoyagesByDestinationId(id);
+	}
+	
+	@GET
+	@Path("/reduced")
+	@Produces({"application/json;charset=utf-8"})
+	public Set<DestinationDTO> getDestinationByReducedDatesVoyage() {
+		Set<DestinationDTO> dtos = new HashSet<DestinationDTO>();
+		List<Destination> destinations = destinationdao.getValidDestinations();
+		for(Destination d : destinations) {
+			Set<DatesVoyage> datesVoyages = destinationdao.getDatesVoyageByDestinationId(d.getId());
+					for(DatesVoyage date : datesVoyages)
+						if(date.getPromotion() == 1) {
+							dtos.add(new DestinationDTO(d));
+						}
+		}
+		return dtos;
+	}
+	
+	@GET
 	@Path("/{id}")
 	@Produces({"application/json;charset=utf-8"})
 	public DestinationDTO findById(@PathParam("id")long id) {
@@ -83,5 +120,27 @@ public class DestinationService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public void deleteDatesVoyage(@PathParam("id")long id) {
 		destinationdao.deleteDatesVoyage(id);
+	}
+	
+	@POST
+	@Path("/voyage/add")
+	@Consumes({"application/json;charset=utf-8"})
+	public void orderVoyage(Voyage voyage) {
+		destinationdao.orderVoyage(voyage);
+	}
+	
+	@GET
+	@Path("/voyage/all")
+	@Produces({"application/json;charset=utf-8"})
+	public List<Voyage> getVoyage() {
+		return destinationdao.getVoyage();
+	}
+	
+	@POST
+	@Path("/voyage/edit")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateVoyage(Voyage voyage) {
+		destinationdao.updateVoyage(voyage);
 	}
 }
