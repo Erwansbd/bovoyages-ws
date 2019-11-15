@@ -1,4 +1,5 @@
 package fr.gtm.bovoyages.dao;
+
 //
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,7 +16,6 @@ import fr.gtm.bovoyages.dto.DestinationDTO;
 import fr.gtm.bovoyages.entities.DatesVoyage;
 import fr.gtm.bovoyages.entities.Destination;
 import fr.gtm.bovoyages.entities.Voyage;
-
 
 @Singleton
 public class DestinationDAO extends AbstractDAO<Destination, Long> {
@@ -60,35 +60,34 @@ public class DestinationDAO extends AbstractDAO<Destination, Long> {
 		return datesVoyage;
 	}
 
-	public void deleteDatesVoyage(long id) {
-		DatesVoyage datesVoyage = em.find(DatesVoyage.class, id);
-		em.remove(datesVoyage);
-	}
-
-	@Override
-	protected EntityManager getEntityManager() {
-
-		return em;
+	public String[] getAllRegions() {
+		List<Destination> destinations = em.createNamedQuery("Destination.getAllDestinations", Destination.class)
+				.getResultList();
+		String[] regions = new String[destinations.size()];
+		int i = 0;
+		for (Destination d : destinations) {
+			regions[i] = d.getRegion();
+			i++;
+		}
+		return regions;
 	}
 
 	public void orderVoyage(Voyage voyage) {
 		if (voyage.getDatesVoyage().getNbrePlaces() > voyage.getVoyageurs().size() && voyage.getVoyageurs().size() >= 1
 				&& voyage.getVoyageurs().size() <= 10) {
-			LOG.info(" >>>>>"+voyage.getDatesVoyage().getNbrePlaces());
-			LOG.info(" >>>>>"+voyage.getDatesVoyage().getId());
-			 voyage.getDatesVoyage()
+			LOG.info(" >>>>>" + voyage.getDatesVoyage().getNbrePlaces());
+			voyage.getDatesVoyage()
 					.setNbrePlaces(voyage.getDatesVoyage().getNbrePlaces() - voyage.getVoyageurs().size());
 			DatesVoyage dv = voyage.getDatesVoyage();
 			voyage.setDatesVoyage(dv);
-			LOG.info(">>>>>"+voyage.getVoyageurs().size());
-			LOG.info(" >>>>"+voyage.getDatesVoyage().getNbrePlaces());
-			LOG.info(" >>>>"+voyage.getDatesVoyage().getId());
+			LOG.info(">>>>>" + voyage.getVoyageurs().size());
+			LOG.info(" >>>>" + voyage.getDatesVoyage().getNbrePlaces());
 			em.persist(voyage);
 			updateDV(dv);
-			LOG.info(" >>>>"+voyage.getDatesVoyage().getNbrePlaces());
+			LOG.info(" >>>>" + voyage.getDatesVoyage().getNbrePlaces());
 		}
 	}
-	
+
 	public void updateDV(DatesVoyage datesVoyage) {
 		DatesVoyage dv = em.find(DatesVoyage.class, datesVoyage.getId());
 		dv.setDateAller(datesVoyage.getDateAller());
@@ -102,10 +101,31 @@ public class DestinationDAO extends AbstractDAO<Destination, Long> {
 		List<Voyage> voyages = em.createNamedQuery("Voyage.getAllVoyages", Voyage.class).getResultList();
 		return voyages;
 	}
-	
+
 	public void updateVoyage(Voyage voyage) {
 		Voyage voyageSaved = em.find(Voyage.class, voyage.getId());
 		voyageSaved.setVoyageurs(voyage.getVoyageurs());
 		em.merge(voyageSaved);
+	}
+
+	public Voyage getVoyageById(long id) {
+		Voyage voyage = em.find(Voyage.class, id);
+		return voyage;
+	}
+
+	public void deleteDatesVoyage(long id) {
+		DatesVoyage datesVoyage = em.find(DatesVoyage.class, id);
+		em.remove(datesVoyage);
+	}
+
+	public void deleteVoyage(long id) {
+		Voyage voyage = em.find(Voyage.class, id);
+		em.remove(voyage);
+	}
+
+	@Override
+	protected EntityManager getEntityManager() {
+
+		return em;
 	}
 }

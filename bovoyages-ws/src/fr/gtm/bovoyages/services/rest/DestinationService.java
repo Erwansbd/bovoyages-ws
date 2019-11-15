@@ -143,4 +143,26 @@ public class DestinationService {
 	public void updateVoyage(Voyage voyage) {
 		destinationdao.updateVoyage(voyage);
 	}
+	
+	@GET
+	@Path("/all/regions")
+	@Produces({"application/json;charset=utf-8"})
+	public String[] getAllRegions() {
+		return destinationdao.getAllRegions();
+	}
+	
+	@DELETE
+	@Path("/voyage/del/{id}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public void deleteVoyage(@PathParam("id") long id) {
+		destinationdao.deleteVoyage(id);
+	}
+	
+	@GET
+	@Path("/voyage/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Voyage getVoyageById(@PathParam("id") long id) {
+	   return destinationdao.getVoyageById(id);
+	}
 }

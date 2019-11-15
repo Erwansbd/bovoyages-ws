@@ -25,6 +25,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "destinations")
 @NamedQueries({
@@ -160,6 +161,4 @@ public class Destination implements Serializable {
 			return false;
 		return true;
 	}
-
-
 }

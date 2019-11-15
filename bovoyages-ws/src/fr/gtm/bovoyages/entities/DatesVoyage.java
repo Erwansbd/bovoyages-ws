@@ -82,6 +82,14 @@ public class DatesVoyage implements Serializable {
 	public void setPromotion(int promotion) {
 		this.promotion = promotion;
 	}
+
+	public DatesVoyage() {
+		super();
+	}
+	public DatesVoyage(Date dateAller, Date dateRetour) {
+		this.dateAller = dateAller;
+		this.dateRetour = dateRetour;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -125,13 +133,6 @@ public class DatesVoyage implements Serializable {
 		if (promotion != other.promotion)
 			return false;
 		return true;
-	}
-	public DatesVoyage() {
-		super();
-	}
-	public DatesVoyage(Date dateAller, Date dateRetour) {
-		this.dateAller = dateAller;
-		this.dateRetour = dateRetour;
 	}
 	
 	
